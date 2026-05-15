@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import authRoutes from "./modules/auth/auth.routes.js";
+import adminRoutes from "./modules/admin/admin.routes.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,6 +14,7 @@ app.get("/health", (req, res) => {
   res.json({ ok: true, message: "Backend funcionando correctamente" });
 });
 app.use("/auth", authRoutes);
+app.use("/admin", adminRoutes);
 app.listen(PORT, () => {
   console.log(`Servidor backend activo en http://localhost:${PORT}`);
 });

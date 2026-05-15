@@ -1,22 +1,39 @@
 import { useEffect, useState } from "react";
-import { checkHealth } from "./services/api";
+import Login from "./pages/Login";
 function App() {
-  const [message, setMessage] = useState("Verificando conexion con backend...");
+  const [user, setUser] = useState(null);
+  const [adminStats, setAdminStats] = useState(null);
+  const token = localStorage.getItem("token");
   useEffect(() => {
-    checkHealth()
-      .then((data) => {
-        setMessage("Backend conectado");
-        console.log(data);
-      })
-      .catch(() => {
-        setMessage("Error de conexion con backend");
-      });
-  }, []);
-
+    if (!token) return;
+    fetch("http://localhost:3000/auth/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((d) => setUser(d.user))
+      .catch(() => setUser(null));
+  }, [token]);
+  async function loadAdminStats() {
+    const response = await fetch("http://localhost:3000/admin/stats", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+    setAdminStats(data);
+  }
+  if (!token) return <Login />;
   return (
     <div>
-      <h1>SecureDesk ADSO</h1>
-      <p>{message}</p>
+      {" "}
+      <h1>SecureDesk ADSO</h1>{" "}
+      <p>
+        Sesion activa: {user?.email} - Rol: {user?.role}
+      </p>{" "}
+      {user?.role === "ADMIN" ? (
+        <button onClick={loadAdminStats}> Consultar estadisticas admin </button>
+      ) : (
+        <p>Tu rol no tiene acceso a estadisticas administrativas.</p>
+      )}{" "}
+      {adminStats && <pre>{JSON.stringify(adminStats, null, 2)}</pre>}{" "}
     </div>
   );
 }
