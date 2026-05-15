@@ -5,7 +5,7 @@ export function authMiddleware(req, res, next){
         return res.status(401).json({message: "Token requerido"});
     }
     try{
-        req.user = jwt.verify(authHeader.split("")[1], process.env.JWT_SECRET);
+        req.user = jwt.verify(authHeader.split(" ")[1], process.env.JWT_SECRET);
         next();
     } catch {
         return res.status(401).json({message: "Token invalido o expirado"});
