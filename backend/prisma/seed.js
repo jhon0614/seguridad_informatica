@@ -11,7 +11,7 @@ async function main(){
         },
         {
         name: "Analista",
-        email: "admin@securedesk.com",
+        email: "analista@securedesk.com",
         password: "Analista123*",
         role: "ANALISTA",
         },
